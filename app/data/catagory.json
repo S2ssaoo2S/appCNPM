@@ -1,0 +1,14 @@
+[
+  {
+    "cate_id": 1,
+    "name": "laptop"
+  },
+  {
+    "cate_id": 2,
+    "name": "Mobile"
+  },
+  {
+    "cate_id": 3,
+    "name": "Taplet"
+  }
+]
