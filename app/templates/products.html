@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'layout/base.html'%}
+{%block content%}
   <div class="card" style="padding:0.7rem">
                 <img class="card-img-top" src="{{details.image}}" alt="{{details.name}}">
                 <div class="card-body" >
@@ -16,5 +11,4 @@
 
 
             </div>
-</body>
-</html>
+{%endblock%}
