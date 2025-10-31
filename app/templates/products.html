@@ -1,14 +1,26 @@
 {% extends 'layout/base.html'%}
+
+{%block title%} Chi tiết sản phẩm {%endblock%}
 {%block content%}
-  <div class="card" style="padding:0.7rem">
-                <img class="card-img-top" src="{{details.image}}" alt="{{details.name}}">
-                <div class="card-body" >
-                    <h4 class="card-title">{{details.name}}</h4>
-                    <p class="card-text">{{details.name}}</p>
-                    <a href="\products\2" class="btn btn-primary">Giá : {{details.price}}</a>
-                    <a href="#" class="btn btn-danger">Đặt hàng</a>
-                </div>
+<div class="row">
+    <div class="col-md-5 col-12">
+        <img src="{{details.image}}" alt="" class="img-fluid">
+
+    </div>
+    <div class="col-md-7 col-12">
+        <h3 class="text-info">{{details.name}}</h3>
+        <h4 class="text-danger">{{"{:,.1f}".format(details.price)}} VND</h4>
+    </div>
+</div>
+<!--  <div class="card" style="padding:0.7rem">-->
+<!--                <img class="card-img-top" src="{{details.image}}" alt="{{details.name}}">-->
+<!--                <div class="card-body" >-->
+<!--                    <h4 class="card-title">{{details.name}}</h4>-->
+<!--                    <p class="card-text">{{details.name}}</p>-->
+<!--                    <a href="\products\2" class="btn btn-primary">Giá : {{details.price}}</a>-->
+<!--                    <a href="#" class="btn btn-danger">Đặt hàng</a>-->
+<!--                </div>-->
 
 
-            </div>
+<!--            </div>-->
 {%endblock%}

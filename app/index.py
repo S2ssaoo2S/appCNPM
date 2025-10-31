@@ -1,16 +1,21 @@
-from itertools import product
-from flask import Flask, render_template, request
+from flask import render_template, request
 import dao
-
-app = Flask(__name__)
+from app import app
 
 
 @app.route("/")
 def index():
     q = request.args.get("q")
     cate_id = request.args.get("cate_id")
-    print(dao.load_product(q, cate_id))
-    return render_template("index.html",  products=dao.load_product(q, cate_id))
+    page = (request.args.get("page"))
+    pages = dao.Product_count()/app.config["PAGE_SIZE"]
+    return render_template("index.html",  products=dao.load_product(q,cate_id,page),pages=int(pages))
+
+
+@app.route('/login')
+def login():
+    return render_template(("login.html"))
+
 
 
 @app.route("/products/<int:id>")
