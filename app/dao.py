@@ -2,7 +2,7 @@ import hashlib
 import json
 from flask_login import current_user , login_required,logout_user
 from models import User
-from app import app
+from app import app,db
 from models import Category,Product
 
 def load_catagories():
@@ -37,7 +37,11 @@ def auth_user(username,password):
     password = hashlib.md5(password.encode('utf-8')).hexdigest()
     return User.query.filter(User.username.__eq__(username),User.password.__eq__(password)).first()
 
-
+def add_user(name, username,password,avatar):
+    password = hashlib.md5(password.encode('utf-8')).hexdigest()
+    u = User(name=name,username=username,password=password,avatar=avatar)
+    db.session.add(u)
+    db.session.commit()
 def get_user_by_id(id):
     return User.query.get(id)
 def load_product_by_id(id):
@@ -53,4 +57,6 @@ def Product_count():
     return Product.query.count()
 
 if __name__ == "__main__":
-    print(load_product_by_id(2))
+   with app.app_context():
+       add_user("Nguyen Van A", "nguyenvana", "123456", "avatar.png")
+

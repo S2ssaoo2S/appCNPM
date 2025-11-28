@@ -1,21 +1,46 @@
-from flask_admin import Admin, AdminIndexView, expose
+from flask import redirect
+from flask_admin import Admin, AdminIndexView, expose, BaseView
 from flask_admin.contrib.sqla import ModelView
-
 from flask_admin.theme import Bootstrap4Theme
-from app import app,db
-from models import Category
-class CategoryModelView(ModelView):
-    column_list = ['name','products']
+
+from models import UserRole, Category, Product,db,app
+
+
+from flask_login import current_user, logout_user
+
+class AuthenticatedView(ModelView):
+    def is_accessible(self) -> bool:
+        return current_user.is_authenticated and current_user.UserRole == UserRole.Admin
+class MyCategoryView(AuthenticatedView):
+    column_list = ['name', 'products']
     column_searchable_list = ['name']
-class MyIndexView(AdminIndexView):
+    column_filters = ['name']
+
+
+class MyProductView(AuthenticatedView):
+    column_list = ['name','price','description','image','category']
+    column_searchable_list = ['name']
+    column_filters = ['name']
+class MyLogoutView(BaseView):
     @expose('/')
-    def index(self) ->str:
+    def index(self) -> str:
+        logout_user()
+        return redirect("/admin")
 
+    def is_accessible(self) -> bool:
+        return current_user.is_authenticated
+class MystatsView(BaseView):
+    @expose('/')
+    def index(self):
+        return  self.render(('admin/stats.html'))
+class MyAdminIndexView(AdminIndexView):
+    @expose('/')
+    def index(self) -> str:
         return self.render('admin/index.html')
-admin = Admin(app=app, name="E-COMMERCE", theme=Bootstrap4Theme(),index_view=MyIndexView())
 
+admin = Admin(app=app, name="E-COMMERCE", theme=Bootstrap4Theme(), index_view=MyAdminIndexView())
 
-
-
-
-admin.add_view(CategoryModelView(Category,db.session))
+admin.add_view(MyCategoryView(Category, db.session))
+admin.add_view(MyProductView(Product, db.session))
+admin.add_view((MystatsView("Thống kê")))
+admin.add_view(MyLogoutView("Đăng xuất"))

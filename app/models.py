@@ -3,7 +3,7 @@ from enum import  Enum as  UserEnum
 from sqlalchemy.orm import relationship
 import json
 from app import db,app
-from sqlalchemy import column, Integer, String, Float, Column, ForeignKey, Boolean, DateTime, Enum
+from sqlalchemy import Integer, String, Float, Column, ForeignKey, Boolean, DateTime, Enum,TEXT
 import datetime
 from flask_login import  UserMixin
 
@@ -41,7 +41,7 @@ class Product(Base):
     price =  Column(Float,default=0.0)
     image =  Column(String(300),default="https://res.cloudinary.com/dy1unykph/image/upload/v1729842193/iPhone_15_Pro_Natural_1_ltf9vr.webp")
     cate_id = Column(Integer, ForeignKey(Category.id),nullable=False)
-
+    description = Column(TEXT)
 
 if __name__ == "__main__":
     with app.app_context():

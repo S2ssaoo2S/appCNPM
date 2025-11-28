@@ -1,9 +1,11 @@
-
-from flask import render_template, request, redirect
+import cloudinary.uploader
+from flask import render_template, request, redirect, session
 from flask_login import login_user, logout_user, current_user
+
+
 import dao
 
-from app import app,login,admin
+from app import app,login,admin,db,decorator
 
 
 @app.route("/")
@@ -17,6 +19,7 @@ def index():
 
 
 @app.route('/login',methods=['GET','POST'])
+@decorator.anonymous_required
 def login_my_user():
     err_msg = None
     if current_user.is_authenticated:
@@ -57,7 +60,54 @@ def logout():
     logout_user()
 
     return redirect("/")
+@app.route('/register' ,methods=['get','post'])
+def register():
+    err_msg = None
+    if request.method.__eq__('POST'):
+        password = request.form.get("password")
+        confirm = request.form.get("confirm")
+        if password.__eq__(confirm):
+            name = request.form.get('name')
+            username = request.form.get('username')
+            file = request.files.get('avatar')
+            file_path = None
+            #####
 
+            if file:
+                res = cloudinary.uploader.upload(file)
+                file_path=res['secure_url']
+
+            try:
+
+                dao.add_user(name=name, username=username, password=password, avatar=file_path)
+
+            except:
+                db.session.rollback()
+                err_msg="hệ thống bị lỗi! vui lòng quay lại sau"
+
+        else:
+            err_msg= "Mật khẩu không khớp!"
+
+    return render_template('register.html', err_msg=err_msg)
+@app.route('/cart')
+def cart():
+    session['cart'] = {
+            "1":
+                {"id":"1",
+                "name":"Iphone 15",
+                "price":1500,
+                "quantity":1
+            },
+            "2":{
+                "id": "2",
+                 "name": "SS GLX",
+                 "price": 1500,
+                 "quantity": 1
+
+            }
+    }
+
+    return render_template('cart.html')
 @app.route("/products/<int:id>")
 def product_details(id):
     return render_template("products.html",details=dao.load_product_by_id(id))
